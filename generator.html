@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador QR - CLAP BAR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .scanner-link {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .scanner-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .generator-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .input-section, .output-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4ecdc4, #2ecc71);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.6);
+        }
+
+        .qr-display {
+            text-align: center;
+            padding: 2rem;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .qr-display.empty {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #qrcode {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .preset-btn h4 {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .generator-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .input-section, .output-section {
+                padding: 1rem;
+            }
+            
+            .scanner-link {
+                position: relative;
+                top: auto;
+                right: auto;
+                display: block;
+                margin: 1rem auto;
+                text-align: center;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-button">← Inicio</a>
+    <a href="qr.html" class="scanner-link">📱 Ir al Escáner</a>
+    
+    <div class="header">
+        <h1>🎯 Generador de QR</h1>
+        <p>Crea códigos QR personalizados para probar tu escáner</p>
+    </div>
+
+    <div class="generator-container">
+        <div class="input-section">
+            <h3 style="color: #ffd700; margin-bottom: 1rem;">📝 Crear QR Personalizado</h3>
+            
+            <div class="form-group">
+                <label for="qr-type">Tipo de QR:</label>
+                <select id="qr-type">
+                    <option value="text">📄 Texto</option>
+                    <option value="url">🔗 URL/Enlace</option>
+                    <option value="email">📧 Email</option>
+                    <option value="phone">📞 Teléfono</option>
+                    <option value="wifi">📶 WiFi</option>
+                    <option value="vcard">👤 Contacto</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="qr-content">Contenido:</label>
+                <textarea id="qr-content" placeholder="Escribe aquí el contenido del QR..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="qr-size">Tamaño:</label>
+                <select id="qr-size">
+                    <option value="200">200x200 px</option>
+                    <option value="300" selected>300x300 px</option>
+                    <option value="400">400x400 px</option>
+                    <option value="500">500x500 px</option>
+                </select>
+            </div>
+
+            <button class="btn" onclick="generateQR()">🎯 Generar QR</button>
+
+            <h3 style="color: #ffd700; margin: 2rem 0 1rem;">⚡ QRs de Prueba Rápida</h3>
+            <div class="presets">
+                <button class="preset-btn" onclick="loadPreset('text', 'Hola desde CLAP BAR! 🍹')">
+                    <h4>📄 Texto Simple</h4>
+                    <small>Mensaje de saludo</small>
+                </button>
+                
+                <button class="preset-btn" onclick="loadPreset('url', 'https://github.com/FiToPero/CLAP_CAFFE')">
+                    <h4>🔗 Tu GitHub</h4>
+                    <small>Enlace al repositorio</small>
+                </button>
+                
+                <button class="preset-btn" onclick="loadPreset('url', 'https://www.google.com')">
+                    <h4>🌐 Google</h4>
+                    <small>Ir a Google</small>
+                </button>
+                
+                <button class="preset-btn" onclick="loadPreset('phone', '+1234567890')">
+                    <h4>📞 Teléfono</h4>
+                    <small>Número de ejemplo</small>
+                </button>
+                
+                <button class="preset-btn" onclick="loadPreset('email', 'contacto@clapbar.com')">
+                    <h4>📧 Email</h4>
+                    <small>Enviar correo</small>
+                </button>
+                
+                <button class="preset-btn" onclick="loadPreset('text', 'Este es un texto largo para probar cómo el escáner maneja contenido extenso con múltiples líneas y caracteres especiales. ¡Perfecto para testing! 🚀✨🎉')">
+                    <h4>📝 Texto Largo</h4>
+                    <small>Para probar límites</small>
+                </button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <h3 style="color: #ffd700; margin-bottom: 1rem;">🎯 Tu Código QR</h3>
+            
+            <div id="qr-display" class="qr-display empty">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                <p>Tu código QR aparecerá aquí</p>
+                <small>Selecciona un preset o crea uno personalizado</small>
+            </div>
+
+            <div id="qr-actions" style="text-align: center; display: none;">
+                <button class="download-btn" onclick="downloadQR()">💾 Descargar PNG</button>
+                <button class="download-btn" onclick="printQR()">🖨️ Imprimir</button>
+            </div>
+
+            <div style="margin-top: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                <h4 style="color: #ffd700; margin-bottom: 0.5rem;">💡 Consejos:</h4>
+                <ul style="font-size: 0.9rem; line-height: 1.6;">
+                    <li>• Genera un QR y úsalo para probar tu escáner</li>
+                    <li>• Los QRs funcionan mejor con buena iluminación</li>
+                    <li>• Mantén el QR a 15-30cm de la cámara</li>
+                    <li>• Prueba diferentes tipos de contenido</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        let currentQRData = '';
+
+        function loadPreset(type, content) {
+            document.getElementById('qr-type').value = type;
+            document.getElementById('qr-content').value = content;
+            generateQR();
+        }
+
+        function generateQR() {
+            const type = document.getElementById('qr-type').value;
+            const content = document.getElementById('qr-content').value.trim();
+            const size = parseInt(document.getElementById('qr-size').value);
+
+            if (!content) {
+                alert('Por favor, introduce algún contenido para el QR');
+                return;
+            }
+
+            let qrData = content;
+
+            // Formatear según el tipo
+            switch(type) {
+                case 'url':
+                    if (!content.startsWith('http://') && !content.startsWith('https://')) {
+                        qrData = 'https://' + content;
+                    }
+                    break;
+                case 'email':
+                    qrData = 'mailto:' + content;
+                    break;
+                case 'phone':
+                    qrData = 'tel:' + content;
+                    break;
+                case 'wifi':
+                    // Formato: WIFI:T:WPA;S:NetworkName;P:Password;H:false;;
+                    const parts = content.split(',');
+                    if (parts.length >= 2) {
+                        qrData = `WIFI:T:WPA;S:${parts[0]};P:${parts[1]};H:false;;`;
+                    }
+                    break;
+                case 'vcard':
+                    qrData = `BEGIN:VCARD\nVERSION:3.0\nFN:${content}\nEND:VCARD`;
+                    break;
+            }
+
+            currentQRData = qrData;
+
+            // Limpiar QR anterior
+            document.getElementById('qr-display').innerHTML = '';
+            
+            // Generar nuevo QR
+            QRCode.toCanvas(qrData, {
+                width: size,
+                margin: 2,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error, canvas) {
+                const display = document.getElementById('qr-display');
+                
+                if (error) {
+                    display.innerHTML = `
+                        <div style="color: #e74c3c;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+                            <p>Error al generar QR</p>
+                            <small>${error.message}</small>
+                        </div>
+                    `;
+                    document.getElementById('qr-actions').style.display = 'none';
+                } else {
+                    display.classList.remove('empty');
+                    display.appendChild(canvas);
+                    
+                    // Mostrar información del QR
+                    const info = document.createElement('div');
+                    info.style.marginTop = '1rem';
+                    info.style.fontSize = '0.9rem';
+                    info.innerHTML = `
+                        <strong>Tipo:</strong> ${type.toUpperCase()}<br>
+                        <strong>Tamaño:</strong> ${size}x${size}px<br>
+                        <strong>Contenido:</strong> ${qrData.length > 50 ? qrData.substring(0, 50) + '...' : qrData}
+                    `;
+                    display.appendChild(info);
+                    
+                    document.getElementById('qr-actions').style.display = 'block';
+                }
+            });
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qr-display canvas');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'qr-code-clap-bar.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            }
+        }
+
+        function printQR() {
+            const canvas = document.querySelector('#qr-display canvas');
+            if (canvas) {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Código QR - CLAP BAR</title>
+                        <style>
+                            body { 
+                                display: flex; 
+                                justify-content: center; 
+                                align-items: center; 
+                                min-height: 100vh; 
+                                margin: 0; 
+                                flex-direction: column; 
+                                font-family: Arial, sans-serif;
+                            }
+                            h1 { margin-bottom: 20px; }
+                            canvas { border: 1px solid #ccc; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>🍹 CLAP BAR - Código QR</h1>
+                        ${canvas.outerHTML}
+                        <p style="margin-top: 20px; text-align: center;">
+                            Contenido: ${currentQRData.length > 100 ? currentQRData.substring(0, 100) + '...' : currentQRData}
+                        </p>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+                printWindow.focus();
+                setTimeout(() => {
+                    printWindow.print();
+                    printWindow.close();
+                }, 500);
+            }
+        }
+
+        // Generar QR de bienvenida al cargar
+        window.addEventListener('load', () => {
+            loadPreset('text', '¡Bienvenido a CLAP BAR! 🍹 Tu escáner QR funciona perfectamente. ¡Prueba escaneando otros códigos!');
+        });
+    </script>
+</body>
+</html>
