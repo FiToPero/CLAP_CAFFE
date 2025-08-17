@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #5AF2CA 0%, #078C69 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -49,25 +49,6 @@
             opacity: 0.9;
         }
 
-        .qr-button {
-            display: inline-block;
-            padding: 1rem 2rem;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-            margin: 1rem;
-        }
-
-        .qr-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
-        }
-
         .features {
             margin-top: 2rem;
             display: grid;
@@ -81,9 +62,14 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .feature h3 {
+        .feature h2 {
             margin-bottom: 0.5rem;
-            color: #ffd700;
+            color: #E6F2EF;
+        }
+        .feature p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            opacity: 0.8;
         }
 
         .footer {
@@ -106,35 +92,30 @@
 <body>
     <div class="container">
         <h1>🍹 CLAP BAR</h1>
-        <p class="subtitle">Bienvenido a nuestra experiencia digital</p>
-        
-        <a href="qr.html" class="qr-button">
-            📱 Abrir Escáner QR
-        </a>
-        
-        <a href="generator.html" class="qr-button" style="background: linear-gradient(45deg, #4ecdc4, #2ecc71);">
-            🎯 Generar QR
-        </a>
+        <p class="subtitle">Bienvenido a nuestra experiencia en Cafe</p>
         
         <div class="features">
             <div class="feature">
-                <h3>🎯 Escáner Rápido</h3>
-                <p>Escanea códigos QR al instante con tu cámara</p>
+                <h2>☕ Menú 01</h2>
+                <p>bebidas calientes</p>
+                <img src="images/menu01.jpg" alt="Menú 01" style="max-width: 100%; border-radius: 10px;">
             </div>
             
             <div class="feature">
-                <h3>📱 Compatible</h3>
-                <p>Funciona en todos los dispositivos móviles y de escritorio</p>
+                <h2>🍰 Menú 02</h2>
+                <p>tortas y pasteles</p>
+                <img src="images/menu02.jpg" alt="Menú 02" style="max-width: 100%; border-radius: 10px;">
             </div>
             
             <div class="feature">
-                <h3>🔒 Seguro</h3>
-                <p>Tu privacidad está protegida, no guardamos datos</p>
+                <h2>🥪 Menú 03</h2>
+                <p>especialidades </p>
+                <img src="images/menu03.jpg" alt="Menú 03" style="max-width: 100%; border-radius: 10px;">
             </div>
         </div>
         
         <div class="footer">
-            <p>© 2025 CLAP BAR - Powered by GitHub Pages</p>
+            <p>© 2025 CLAP BAR </p>
         </div>
     </div>
 </body>
